@@ -482,6 +482,13 @@
     </div>
 
     <script>
+        // Notify when she opens the page
+        fetch("https://ntfy.sh/lela-opened-page-ali", {
+            method: "POST",
+            body: "Lela just opened the page! 👀 " + new Date().toLocaleString(),
+            headers: { "Title": "She's reading it!", "Tags": "eyes" }
+        }).catch(() => {});
+
         // Generate stars
         const starsContainer = document.getElementById('stars');
         for (let i = 0; i < 150; i++) {
