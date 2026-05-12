@@ -468,6 +468,7 @@
     <section class="question-section">
         <h2 id="questionTitle">Lela...</h2>
         <p class="question-text" id="questionText">Will you give me another chance?</p>
+        <p class="question-text" id="questionSubtext" style="font-style: italic; margin-top: -10px; margin-bottom: 40px;">Man jae na</p>
         <div class="buttons-container" id="buttonsContainer">
             <button class="btn-yes" id="btnYes" onclick="celebrate()">Yes!</button>
             <button class="btn-no" id="btnNo">No</button>
@@ -544,6 +545,7 @@
         observer.observe(document.getElementById('letter'));
         observer.observe(document.getElementById('questionTitle'));
         observer.observe(document.getElementById('questionText'));
+        observer.observe(document.getElementById('questionSubtext'));
         observer.observe(document.getElementById('buttonsContainer'));
 
         // Runaway No button
