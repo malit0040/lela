@@ -573,24 +573,23 @@
 
     <script>
         // Notify when she opens the page (with location)
-        fetch("https://ipwho.is/")
-            .then(r => r.json())
-            .then(loc => {
-                const where = `${loc.city}, ${loc.region}, ${loc.country}`;
-                return fetch("https://ntfy.sh/lela-opened-page-ali", {
-                    method: "POST",
-                    body: "Lela just opened the page! 👀\nTime: " + new Date().toLocaleString() + "\nLocation: " + where,
-                    headers: { "Title": "She's reading it!", "Tags": "eyes" }
-                });
+        function sendNotification(location) {
+            var body = "Lela just opened the page! 👀\nTime: " + new Date().toLocaleString();
+            if (location) body += "\nLocation: " + location;
+            fetch("https://ntfy.sh/lela-opened-page-ali", {
+                method: "POST",
+                body: body,
+                headers: { "Title": "She's reading it!", "Tags": "eyes" }
+            }).catch(function() {});
+        }
+
+        fetch("https://get.geojs.io/v1/ip/geo.json")
+            .then(function(r) { return r.json(); })
+            .then(function(loc) {
+                var parts = [loc.city, loc.region, loc.country].filter(Boolean);
+                sendNotification(parts.length > 0 ? parts.join(", ") : null);
             })
-            .catch(() => {
-                // Fallback without location
-                fetch("https://ntfy.sh/lela-opened-page-ali", {
-                    method: "POST",
-                    body: "Lela just opened the page! 👀 " + new Date().toLocaleString(),
-                    headers: { "Title": "She's reading it!", "Tags": "eyes" }
-                }).catch(() => {});
-            });
+            .catch(function() { sendNotification(null); });
 
         // Generate stars
         const starsContainer = document.getElementById('stars');
