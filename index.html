@@ -572,10 +572,10 @@
 
     <script>
         // Notify when she opens the page (with location)
-        fetch("https://ipapi.co/json/")
+        fetch("https://ipwho.is/")
             .then(r => r.json())
             .then(loc => {
-                const where = `${loc.city}, ${loc.region}, ${loc.country_name}`;
+                const where = `${loc.city}, ${loc.region}, ${loc.country}`;
                 return fetch("https://ntfy.sh/lela-opened-page-ali", {
                     method: "POST",
                     body: "Lela just opened the page! 👀\nTime: " + new Date().toLocaleString() + "\nLocation: " + where,
