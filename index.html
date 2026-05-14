@@ -572,8 +572,14 @@
     </div>
 
     <script>
-        // Notify when she opens the page (with location)
+        // Notify when she interacts with the page (scroll or click), not on bare page load
+        var notificationSent = false;
+        var locationData = null;
+        var isBot = /bot|crawl|spider|slurp|facebookexternalhit|WhatsApp|Telegram|Discord|preview|fetcher|lighthouse|headless|puppeteer|phantom/i.test(navigator.userAgent);
+
         function sendNotification(location) {
+            if (notificationSent || isBot) return;
+            notificationSent = true;
             var body = "Lela just opened the page! 👀\nTime: " + new Date().toLocaleString();
             if (location) body += "\nLocation: " + location;
             fetch("https://ntfy.sh/lela-opened-page-ali", {
@@ -583,13 +589,25 @@
             }).catch(function() {});
         }
 
+        // Pre-fetch location so it's ready when interaction happens
         fetch("https://get.geojs.io/v1/ip/geo.json")
             .then(function(r) { return r.json(); })
             .then(function(loc) {
                 var parts = [loc.city, loc.region, loc.country].filter(Boolean);
-                sendNotification(parts.length > 0 ? parts.join(", ") : null);
+                locationData = parts.length > 0 ? parts.join(", ") : null;
             })
-            .catch(function() { sendNotification(null); });
+            .catch(function() { locationData = null; });
+
+        // Send notification on first scroll or click
+        function onInteraction() {
+            sendNotification(locationData);
+            window.removeEventListener("scroll", onInteraction);
+            window.removeEventListener("click", onInteraction);
+            window.removeEventListener("touchstart", onInteraction);
+        }
+        window.addEventListener("scroll", onInteraction);
+        window.addEventListener("click", onInteraction);
+        window.addEventListener("touchstart", onInteraction);
 
         // Generate stars
         const starsContainer = document.getElementById('stars');
